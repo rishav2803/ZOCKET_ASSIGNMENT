@@ -1,20 +1,41 @@
 export default class Canvas {
-  constructor(canvasRef, templateData, bgImg, caption, cta) {
+  constructor(canvasRef, templateData, bgImg, caption, cta, color) {
     this.canvasRef = canvasRef;
     this.ctx = this.canvasRef.current.getContext("2d");
     this.templateData = templateData;
     this.caption = caption;
     this.cta = cta;
     this.bgImg = bgImg;
+    this.color = color;
     this.drawCanvas();
   }
 
   drawCanvas() {
     this.clearCanvas();
+    this.drawBgColor(this.color);
     this.drawDesignPattern();
     this.drawImageMask(this.bgImg);
-    this.drawCaption();
-    this.drawCTA();
+    this.drawCaption(this.caption);
+    this.drawCTA(this.cta);
+  }
+
+  updateCanvas(caption, cta, bgImg, color) {
+    this.clearCanvas();
+    this.drawBgColor(color);
+    this.drawDesignPattern();
+    this.drawImageMask(bgImg);
+    this.drawCaption(caption);
+    this.drawCTA(cta);
+  }
+
+  drawBgColor(color) {
+    this.ctx.fillStyle = color;
+    this.ctx.fillRect(
+      0,
+      0,
+      this.canvasRef.current.width,
+      this.canvasRef.current.height
+    );
   }
 
   clearCanvas() {
@@ -43,7 +64,7 @@ export default class Canvas {
     };
   }
 
-  drawCaption() {
+  drawCaption(caption) {
     const {
       text,
       position,
@@ -57,7 +78,7 @@ export default class Canvas {
     this.ctx.textAlign = alignment;
 
     const lines = this.breakTextIntoLines(
-      this.caption.length == 0 ? text : this.caption,
+      caption.length == 0 ? text : caption,
       max_characters_per_line
     );
     let offsetY = position.y + 50;
@@ -91,7 +112,7 @@ export default class Canvas {
     return lines;
   }
 
-  drawCTA() {
+  drawCTA(cta) {
     const {
       text,
       position,
@@ -99,12 +120,10 @@ export default class Canvas {
       text_color,
       background_color,
     } = this.templateData.cta;
-    const textWidth = this.ctx.measureText(
-      this.cta.length == 0 ? text : this.cta
-    ).width;
-
+    const textWidth = this.ctx.measureText(cta.length == 0 ? text : cta).width;
     const adjustedX = position.x - 20;
     const adjustedY = position.y - 50;
+    console.log(cta);
 
     this.ctx.beginPath();
     this.ctx.roundRect(
@@ -123,11 +142,7 @@ export default class Canvas {
     this.ctx.fillStyle = text_color;
     this.ctx.textAlign = "center";
     this.ctx.textBaseline = "middle";
-    this.ctx.fillText(
-      this.cta.length == 0 ? text : this.cta,
-      adjustedX,
-      adjustedY
-    );
+    this.ctx.fillText(cta.length == 0 ? text : cta, adjustedX, adjustedY);
   }
 
   drawImageMask(bgImg) {
@@ -140,6 +155,7 @@ export default class Canvas {
     //wait for both the image to load
     maskImg.onload = () => {
       img.onload = () => {
+        console.log(img);
         //create a temp canvas to cretate something like a mask group
         //of just of the mask and the img
         const tempCanvas = document.createElement("canvas");
@@ -150,6 +166,7 @@ export default class Canvas {
         tempCtx.drawImage(maskImg, x, y, width, height);
         tempCtx.globalCompositeOperation = "source-in";
         tempCtx.drawImage(img, x, y, width, height);
+        tempCtx.globalCompositeOperation = "source-over";
         this.drawMaskStroke();
 
         //draw the temp canvas over the og canvas

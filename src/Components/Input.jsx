@@ -1,6 +1,5 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { TemplateContext } from "../Contexts/TemplateContext";
-import { templateData } from "../Utils/template";
 
 export default function Input({ label }) {
   const { setCta, setCaption } = useContext(TemplateContext);

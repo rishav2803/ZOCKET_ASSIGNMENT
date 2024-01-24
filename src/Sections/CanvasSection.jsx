@@ -5,17 +5,22 @@ import { TemplateContext } from "../Contexts/TemplateContext";
 
 export default function CanvasSection() {
   const canvasRef = useRef(null);
-  const { caption, cta, color, imgUrl } = useContext(TemplateContext);
+  const { debouncedCaption ,debouncedCta,cta, color, imgUrl } = useContext(TemplateContext);
+  const [canvasInstance, setCanvasInstance] = useState(null);
 
   useEffect(() => {
-    new Canvas(canvasRef, templateData, imgUrl, caption, cta);
+    if (canvasInstance) {
+      canvasInstance.updateCanvas(debouncedCaption,debouncedCta,imgUrl,color);
+    } else {
+      setCanvasInstance(new Canvas(canvasRef, templateData, imgUrl, debouncedCaption, debouncedCta,color));
+    }
     return () => {
       console.log("Hello world");
     };
-  }, [caption, cta, imgUrl]);
+  }, [debouncedCaption,color,debouncedCta, imgUrl]);
 
   return (
-    <div style={{ background: `${color}` }}>
+    <div >
       {/* <div> */}
       <canvas ref={canvasRef} height="1080px" width="1080px" />
     </div>

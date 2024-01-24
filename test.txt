@@ -1,0 +1,22 @@
+Understanding the Problem:
+
+The problem requires implementing a simple canvas editor using vanilla HTML Canvas and React. The editor should allow users to:
+Canvas Editor should be able to do following thing:
+Select an image to be placed within a mask on the canvas.
+Change the caption and call to action text with text inputs.
+Change the background color of the template.
+
+
+Approach to the Problem:
+-I understood how canvas masking works using global
+How this global composite masks differnt layer
+-I understood how draw image works in cavas 
+-After that i thought how would i like to transfer data between different sections 
+props drilling or contexts 
+
+Solution:
+
+
+
+
+
